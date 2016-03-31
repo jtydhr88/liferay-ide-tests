@@ -13,35 +13,35 @@
  *
  *******************************************************************************/
 
-package com.liferay.ide.ui.tests.swtbot.page;
+package com.liferay.ide.service.ui.tests.page;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
+
+import com.liferay.ide.service.ui.tests.ServiceBuilderWizard;
+import com.liferay.ide.ui.tests.swtbot.page.TextPO;
 
 /**
- * @author Terry Jia
- * @author Ashley Yuan
+ * @author Ying Xu
  */
-public class CancelPO extends ClosingButtonPO
+public class ServiceBuilderEntitiesPO extends TextPO implements ServiceBuilderWizard
 {
 
-    protected final String cancelButtonText;
+    TextPO entityName;
 
-    public CancelPO( SWTBot bot, String title, String cancelButtonText )
+    public ServiceBuilderEntitiesPO( SWTBot bot )
+    {
+        this( bot, TEXT_BLANK );
+    }
+
+    public ServiceBuilderEntitiesPO( SWTBot bot, String title )
     {
         super( bot, title );
 
-        this.cancelButtonText = cancelButtonText;
+        entityName = new TextPO( bot, LABEL_ENTITY_NAME );
     }
 
-    public void cancel()
+    public void ServiceBuilderEntities( String name )
     {
-        clickClosingButton( cancelButton() );
+        entityName.setText( name );
     }
-
-    public SWTBotButton cancelButton()
-    {
-        return bot.button( cancelButtonText );
-    }
-
 }

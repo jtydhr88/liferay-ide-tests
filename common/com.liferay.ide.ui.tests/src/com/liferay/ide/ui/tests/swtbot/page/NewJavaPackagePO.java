@@ -16,32 +16,39 @@
 package com.liferay.ide.ui.tests.swtbot.page;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
+
+import com.liferay.ide.ui.tests.UIBase;
 
 /**
- * @author Terry Jia
- * @author Ashley Yuan
+ * @author Ying Xu
  */
-public class CancelPO extends ClosingButtonPO
+public class NewJavaPackagePO extends WizardPO implements UIBase
 {
 
-    protected final String cancelButtonText;
+    TextPO name;
+    TextPO sourceFolder;
 
-    public CancelPO( SWTBot bot, String title, String cancelButtonText )
+    public NewJavaPackagePO( SWTBot bot )
     {
-        super( bot, title );
-
-        this.cancelButtonText = cancelButtonText;
+        this( bot, TEXT_BLANK, BUTTON_CANCEL, BUTTON_FINISH );
     }
 
-    public void cancel()
+    public NewJavaPackagePO( SWTBot bot, String title, String cancelButtonText, String finishButtonText )
     {
-        clickClosingButton( cancelButton() );
+        super( bot, title, cancelButtonText, finishButtonText, TEXT_BLANK, TEXT_BLANK );
+        sourceFolder = new TextPO( bot, LABEL_SOURCE_FOLDER );
+        name = new TextPO( bot, LABEL_NAME );
+
     }
 
-    public SWTBotButton cancelButton()
+    public TextPO getSourceFolderText()
     {
-        return bot.button( cancelButtonText );
+        return sourceFolder;
+    }
+
+    public void setName( String packageName )
+    {
+        name.setText( packageName );
     }
 
 }

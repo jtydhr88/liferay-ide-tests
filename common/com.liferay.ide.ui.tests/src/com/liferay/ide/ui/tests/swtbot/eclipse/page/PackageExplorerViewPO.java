@@ -81,7 +81,7 @@ public class PackageExplorerViewPO extends ViewPO implements UIBase
 
         _deleteResourcesDialog.confirmDeleteFromDisk();
 
-        sleep(500);
+        sleep( 500 );
 
         _deleteResourcesDialog.confirm();
 
@@ -99,7 +99,8 @@ public class PackageExplorerViewPO extends ViewPO implements UIBase
         return _projectsTree.hasItems();
     }
 
-    public TreePO getProjectTree() {
+    public TreePO getProjectTree()
+    {
         return _projectsTree;
     }
 

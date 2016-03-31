@@ -15,33 +15,46 @@
 
 package com.liferay.ide.ui.tests.swtbot.page;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotCTabItem;
 
 /**
- * @author Terry Jia
- * @author Ashley Yuan
+ * @author Ying Xu
  */
-public class CancelPO extends ClosingButtonPO
+public class CTabItemPO extends AbstractWidgetPO
 {
 
-    protected final String cancelButtonText;
-
-    public CancelPO( SWTBot bot, String title, String cancelButtonText )
+    public CTabItemPO( SWTBot bot, String lable )
     {
-        super( bot, title );
+        super( bot, lable );
 
-        this.cancelButtonText = cancelButtonText;
     }
 
-    public void cancel()
+    public void click()
     {
-        clickClosingButton( cancelButton() );
+        Display.getDefault().syncExec( new Runnable()
+        {
+
+            public void run()
+            {
+                try
+                {
+                    getWidget().activate();
+                }
+                catch( Exception ex )
+                {
+                    ex.printStackTrace();
+                }
+            }
+        } );
+
     }
 
-    public SWTBotButton cancelButton()
+    @Override
+    protected SWTBotCTabItem getWidget()
     {
-        return bot.button( cancelButtonText );
+        return bot.cTabItem( label );
     }
 
 }

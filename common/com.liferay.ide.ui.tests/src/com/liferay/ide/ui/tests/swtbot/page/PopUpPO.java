@@ -16,32 +16,22 @@
 package com.liferay.ide.ui.tests.swtbot.page;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 
 /**
- * @author Terry Jia
- * @author Ashley Yuan
+ * @author Ying Xu
  */
-public class CancelPO extends ClosingButtonPO
+public class PopUpPO extends ShellPO
 {
 
-    protected final String cancelButtonText;
-
-    public CancelPO( SWTBot bot, String title, String cancelButtonText )
+    public PopUpPO( SWTBot bot, String title )
     {
         super( bot, title );
-
-        this.cancelButtonText = cancelButtonText;
     }
 
-    public void cancel()
+    public PopUpPO( SWTBot bot, String title, int index )
     {
-        clickClosingButton( cancelButton() );
-    }
 
-    public SWTBotButton cancelButton()
-    {
-        return bot.button( cancelButtonText );
+        super( bot, title, index );
     }
 
 }
