@@ -146,10 +146,10 @@ public class SWTBotBase implements UIBase
     {
         return "liferay-plugins-sdk-7.0/";
     }
-    
+
     protected static IPath getLiferayServerDir()
     {
-        return new Path(tempDir).append( "liferay-portal-7.0-ce-b8/" );
+        return new Path( tempDir ).append( "liferay-portal-7.0-ce-b8/" );
     }
 
     protected static IPath getLiferayServerZip()
@@ -161,7 +161,6 @@ public class SWTBotBase implements UIBase
     {
         return "liferay-portal-7.0-ce-b8/";
     }
-
 
     protected static void unzipPluginsSDK() throws IOException
     {
@@ -234,9 +233,10 @@ public class SWTBotBase implements UIBase
 
     }
 
-    public boolean checkServerConsoleMessage( String expectedMessage, int timeout ) throws Exception
+    public boolean checkServerConsoleMessage( String expectedMessage, String consoleName, int timeout )
+        throws Exception
     {
-        TextConsole console = (TextConsole) getConsole( "Liferay" ); // get server console
+        TextConsole console = (TextConsole) getConsole( consoleName ); // get server console
 
         long timeoutExpiredMs = System.currentTimeMillis() + timeout;
 
