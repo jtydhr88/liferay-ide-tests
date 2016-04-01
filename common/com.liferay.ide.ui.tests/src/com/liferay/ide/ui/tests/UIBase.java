@@ -74,5 +74,7 @@ public interface UIBase
 
     public final String TOOLBAR_NEW = "New";
     public final String TITLE_DELETE_RESOURCES = "Delete Resources";
+    
+    public final String MENU_NEW_LIFERAY_PROJECT_EXIS_SOURCE = "New Liferay Project from Existing Source";
 
 }
