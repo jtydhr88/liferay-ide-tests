@@ -23,6 +23,10 @@ import com.liferay.ide.ui.tests.UIBase;
  */
 public interface LiferayPortletWizard extends UIBase
 {
+    public final int INDEX_DEFAULT_VALIDATION_PORTLET_MESSAGE = 3;
+    public final int INDEX_VALIDATION_PORTLET_MESSAGE2 = 5;
+    public final int INDEX_VALIDATION_PORTLET_MESSAGE3 = 6;
+    public final int INDEX_VALIDATION_PORTLET_MESSAGE4 = 0;
 
     public final int INDEX_DEFAULT_VALIDATION_PORTLET_MESSAGE = 3;
     public final int INDEX_VALIDATION_PORTLET_MESSAGE2 = 5;
