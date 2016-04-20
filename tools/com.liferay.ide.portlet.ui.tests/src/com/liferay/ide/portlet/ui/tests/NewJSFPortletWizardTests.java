@@ -73,7 +73,7 @@ public class NewJSFPortletWizardTests extends SWTBotBase implements JSFPortletWi
     @AfterClass
     public static void deleteProject()
     {
-		eclipse.getPackageExporerView().deleteProjectExcludeNames(new String[] { getLiferayPluginsSdkName() }, true);
+        eclipse.getPackageExporerView().deleteProjectExcludeNames( new String[] { getLiferayPluginsSdkName() }, true );
     }
 
     CreateJSFPortletWizardPO page = new CreateJSFPortletWizardPO( bot );
@@ -154,11 +154,10 @@ public class NewJSFPortletWizardTests extends SWTBotBase implements JSFPortletWi
         assertEquals( "/WEB-INF/views/jspfolderchanged", page.getViewFolderText() );
         page.finish();
 
-        sleep(2000);
-        TreeItemPO fileTree =
-            new TreeItemPO(
-                bot, eclipse.getProjectTree(), projectName + "-portlet", "docroot", "WEB-INF", "views",
-                "jspfolderchanged", "view.xhtml" );
+        sleep( 2000 );
+        TreeItemPO fileTree = new TreeItemPO(
+            bot, eclipse.getProjectTree(), projectName + "-portlet", "docroot", "WEB-INF", "views", "jspfolderchanged",
+            "view.xhtml" );
 
         assertTrue( fileTree.isVisible() );
 
@@ -212,10 +211,9 @@ public class NewJSFPortletWizardTests extends SWTBotBase implements JSFPortletWi
         page2.setPortletName( "PortletModes" );
         page.finish();
 
-        TreeItemPO folderTree =
-            new TreeItemPO(
-                bot, eclipse.getProjectTree(), projectName + "-portlet", "docroot", "WEB-INF", "views", "portletmodes" );
-        sleep(2000);
+        TreeItemPO folderTree = new TreeItemPO(
+            bot, eclipse.getProjectTree(), projectName + "-portlet", "docroot", "WEB-INF", "views", "portletmodes" );
+        sleep( 2000 );
         assertTrue( folderTree.getTreeItem( "edit.xhtml" ).isVisible() );
         assertTrue( folderTree.getTreeItem( "edit.xhtml" ).isVisible() );
     }
@@ -238,7 +236,7 @@ public class NewJSFPortletWizardTests extends SWTBotBase implements JSFPortletWi
         TreeItemPO folderTree =
             new TreeItemPO( bot, eclipse.getProjectTree(), projectName + "-portlet", "docroot", "WEB-INF", "views" );
 
-        sleep(2000);
+        sleep( 2000 );
         assertTrue( folderTree.getTreeItem( "icefacestemplate", "view.xhtml" ).isVisible() );
 
         openWizard();

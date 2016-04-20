@@ -36,7 +36,7 @@ import com.liferay.ide.ui.tests.SWTBotBase;
 import com.liferay.ide.ui.tests.WizardBase;
 
 /**
- * @author Li Lu 
+ * @author Li Lu
  */
 public class NewVaadinPortletWizardTests extends SWTBotBase
     implements VaadinPortletWizard, WizardBase, LiferayPortletWizard, ProjectWizard
@@ -74,7 +74,7 @@ public class NewVaadinPortletWizardTests extends SWTBotBase
     @AfterClass
     public static void deleteProject()
     {
-		eclipse.getPackageExporerView().deleteProjectExcludeNames(new String[] { getLiferayPluginsSdkName() }, true);
+        eclipse.getPackageExporerView().deleteProjectExcludeNames( new String[] { getLiferayPluginsSdkName() }, true );
     }
 
     CreateVaadinPortletWizardPO page = new CreateVaadinPortletWizardPO( bot, INDEX__VAADIN_VALIDATION_MESSAGE1 );
@@ -119,7 +119,7 @@ public class NewVaadinPortletWizardTests extends SWTBotBase
         assertEquals( "newvaadinportlet", page2.getPortletName() );
         assertEquals( "NewVaadinPortlet", page2.getDisplayName() );
         assertEquals( "NewVaadinPortlet", page2.getPortletTitle() );
-		assertFalse(page2.get_createResourceBundleFileCheckbox().isChecked());
+        assertFalse( page2.get_createResourceBundleFileCheckbox().isChecked() );
         assertEquals( "content/Language.properties", page2.getResourceBundleFilePath() );
         // page3
         page.next();
@@ -144,7 +144,7 @@ public class NewVaadinPortletWizardTests extends SWTBotBase
     @Test
     public void testPortletClass() throws Exception
     {
-        
+
         page.setPortletClassText( "" );
 
         String message = page.getValidationMessage();

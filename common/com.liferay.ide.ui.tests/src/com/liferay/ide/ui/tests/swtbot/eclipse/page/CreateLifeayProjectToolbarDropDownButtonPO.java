@@ -48,7 +48,7 @@ public class CreateLifeayProjectToolbarDropDownButtonPO extends ToolbarDropDownB
         _newLiferayServer = new MenuItemPO( bot, this, LABEL_NEW_LIFERAY_SERVER );
         _newLiferayServiceBuilder = new MenuItemPO( bot, this, LABEL_NEW_LIFERAY_SERVICE_BUILDER );
         _newLiferayJSFPortlet = new MenuItemPO( bot, this, LABEL_NEW_LIFERAY_JSF_PORTLET );
-        _newLiferayVaadinPortlet=new MenuItemPO( bot, this, LABEL_NEW_LIFERAY_VAADIN_PORTLET );
+        _newLiferayVaadinPortlet = new MenuItemPO( bot, this, LABEL_NEW_LIFERAY_VAADIN_PORTLET );
     }
 
     public MenuItemPO getNewLiferayHookConfigration()
@@ -60,7 +60,7 @@ public class CreateLifeayProjectToolbarDropDownButtonPO extends ToolbarDropDownB
     {
         return _newLiferayJSFPortlet;
     }
-    
+
     public MenuItemPO getNewLiferayPluginProject()
     {
         return _newLiferayPluginProject;
@@ -75,7 +75,7 @@ public class CreateLifeayProjectToolbarDropDownButtonPO extends ToolbarDropDownB
     {
         return _newLiferayServer;
     }
-    
+
     public MenuItemPO getNewLiferayServiceBuilder()
     {
         return _newLiferayServiceBuilder;

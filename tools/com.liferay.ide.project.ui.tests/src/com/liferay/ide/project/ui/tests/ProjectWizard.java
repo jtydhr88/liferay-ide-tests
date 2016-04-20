@@ -121,6 +121,7 @@ public interface ProjectWizard extends UIBase
 
     public final String TOOLTIP_NEW = "New";
     public final String TOOLTIP_NEW_LIFERAY_PORTLET = "New Liferay Portlet";
-    
-    public final String MESAGE_SDK_NOT_SUPPORT=" The selected Plugins SDK does not support creating ext type plugins.  Please configure version 6.2 or less.";
+
+    public final String MESAGE_SDK_NOT_SUPPORT =
+        " The selected Plugins SDK does not support creating ext type plugins.  Please configure version 6.2 or less.";
 }
