@@ -49,7 +49,8 @@ public interface UIBase
     public final String LABEL_DELETE_RESOURCE = "Delete Resources";
     public final String LABEL_ERROR_LOG = "Error Log";
     public final String LABEL_ERROR_LOG_FULL = "Error Log (Workspace Log)";
-    public final String LABEL_LIFERAY = "Liferay";
+    //public final String LABEL_LIFERAY = "Liferay";
+    public final String LABEL_LIFERAY_PLUGINS = "Liferay Plugins";
     public final String LABEL_OTHER = "Other...";
     public final String LABEL_PACKAGE_EXPLORER = "Package Explorer";
     public final String LABEL_PROGRESS = "Progress";
@@ -77,6 +78,7 @@ public interface UIBase
     public final String LABEL_NEW_LIFERAY_LAYOUT_TMEPLATE = "New Liferay Layout Template";
     public final String LABEL_NEW_LIFERAY_JSF_PORTLET = "New Liferay JSF Portlet";
     public final String LABEL_NEW_LIFERAY_VAADIN_PORTLET = "New Liferay Vaadin Portlet";
+    public final String LABEL_NEW_LIFERAY_MODULE_FRAGMENT_PROJECT = "New Liferay Module Fragment Project";
 
     public final String LABEL_LIFERAY_PLUGIN_PROJECT = "Liferay Plugin Project";
     public final String LABEL_LIFERAY_MODULE_PROJECT = "Liferay Module Project";
