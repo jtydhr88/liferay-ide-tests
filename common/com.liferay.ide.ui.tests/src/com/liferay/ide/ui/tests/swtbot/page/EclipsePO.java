@@ -27,6 +27,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 /**
  * @author Terry Jia
  * @author Ying Xu
+ * @author Vicky Wang
  */
 public class EclipsePO extends AbstractPO implements UIBase
 {
@@ -34,6 +35,7 @@ public class EclipsePO extends AbstractPO implements UIBase
     private CreateLifeayProjectToolbarDropDownButtonPO _createLiferayProjectToolbar;
     private NewToolbarDropDownButtonPO _newToolbar;
     private PerspectivePO _liferayPerspective;
+    private PerspectivePO _liferayWorkspacePerspective;
     private PackageExplorerViewPO _packageExporerView;
     private TreePO _projectTree;
     private ViewPO _welcomeView;
@@ -52,6 +54,7 @@ public class EclipsePO extends AbstractPO implements UIBase
         _welcomeView = new ViewPO( bot, LABEL_WELCOME );
         _progressView = new ProgressViewPO( bot );
         _liferayPerspective = new PerspectivePO( bot, LABEL_LIFERAY_PLUGINS );
+        _liferayWorkspacePerspective = new PerspectivePO( bot, LABEL_LIFERAY_WORKSPACE );
         _projectTree = new TreePO( bot );
         _fileMenu = new MenuPO( bot, MENU_FILE );
 
@@ -88,6 +91,11 @@ public class EclipsePO extends AbstractPO implements UIBase
     public PerspectivePO getLiferayPerspective()
     {
         return _liferayPerspective;
+    }
+
+    public PerspectivePO getLiferayWorkspacePerspective()
+    {
+        return _liferayWorkspacePerspective;
     }
 
     public PackageExplorerViewPO getPackageExporerView()
