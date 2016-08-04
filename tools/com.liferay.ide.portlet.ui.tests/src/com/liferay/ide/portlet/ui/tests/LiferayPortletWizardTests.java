@@ -20,12 +20,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.swtbot.swt.finder.keyboard.Keyboard;
 import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.liferay.ide.portlet.ui.tests.page.CreateLiferayPortletWizardPO;
@@ -68,6 +71,13 @@ public class LiferayPortletWizardTests extends SWTBotBase implements LiferayPort
 
     PortletDeploymentDescriptorPO specifyPortletDeploymentDescriptorPage =
         new PortletDeploymentDescriptorPO( bot, INDEX_SPECIFY_PORTLET_DEPLOYMENT_DESCRIPTOR_PAGE );
+
+    @BeforeClass
+    public static void unzipServerAndSdk() throws IOException
+    {
+        unzipPluginsSDK();
+        unzipServer();
+    }
 
     @After
     public void cleanAll()
@@ -256,9 +266,9 @@ public class LiferayPortletWizardTests extends SWTBotBase implements LiferayPort
 
         assertTrue( portletJavaPage.isActive() );
         portletJavaPage.setFocus();
-        //keyPress.pressShortcut( ctrl, N );
+        // keyPress.pressShortcut( ctrl, N );
 
-        eclipse.getFileMenu().clickMenu( MENU_NEW, "Other...");
+        eclipse.getFileMenu().clickMenu( MENU_NEW, "Other..." );
 
         SelectTypePO newSelectLiferayPage = new SelectTypePO( bot, INDEX_SELECT_A_WIZARD_VALIDATION_MESSAGE );
 
@@ -1063,9 +1073,9 @@ public class LiferayPortletWizardTests extends SWTBotBase implements LiferayPort
     }
 
     @Before
-
     public void preparePortletPlguinProject() throws Exception
     {
+        Assume.assumeTrue( runTest() || runAllTests() );
 
         Boolean hasProject = addedProjects();
 

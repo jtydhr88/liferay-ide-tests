@@ -18,8 +18,12 @@ package com.liferay.ide.module.fragment.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.liferay.ide.module.fragment.ui.tests.page.AddFilesToOverridePO;
@@ -37,12 +41,19 @@ import com.liferay.ide.ui.tests.swtbot.page.TreePO;
  */
 public class ModuleFragmentProjectWizardTests extends SWTBotBase implements ModuleFragmentProjectWizard
 {
+
     String projectName = "module-fragment-project";
 
     @AfterClass
     public static void cleanAll()
     {
         eclipse.closeShell( WINDOW_NEW_LIFERAY_MODULE_FRAGMENT );
+    }
+
+    @BeforeClass
+    public static void prepareServer() throws IOException
+    {
+        unzipServer();
     }
 
     @Test
@@ -62,11 +73,12 @@ public class ModuleFragmentProjectWizardTests extends SWTBotBase implements Modu
 
         newModuleFragmentPage.setProjectName( "*" );
         sleep();
-        assertEquals( " *" + TEXT_INVALID_CHARACTER_IN_RESOURCE_NAME + "'*'.", newModuleFragmentPage.getValidationMessage() );
+        assertEquals( " *" + TEXT_INVALID_CHARACTER_IN_RESOURCE_NAME + "'*'.",
+            newModuleFragmentPage.getValidationMessage() );
 
         newModuleFragmentPage.setProjectName( TEXT_BLANK );
         sleep();
-        assertEquals(  TEXT_ENTER_PROJECT_NAME, newModuleFragmentPage.getValidationMessage() );
+        assertEquals( TEXT_ENTER_PROJECT_NAME, newModuleFragmentPage.getValidationMessage() );
 
         newModuleFragmentPage.setProjectName( projectName );
         sleep();
@@ -74,8 +86,8 @@ public class ModuleFragmentProjectWizardTests extends SWTBotBase implements Modu
         assertTrue( newModuleFragmentPage.isLiferayRuntimeTextEnabled() );
         newModuleFragmentPage.next();
 
-        //select OSGi Bundle and Overridden files
-        SetModuleFragmentProjectOSGiBundlePO moduleFragmentOSGiBundlePage = 
+        // select OSGi Bundle and Overridden files
+        SetModuleFragmentProjectOSGiBundlePO moduleFragmentOSGiBundlePage =
             new SetModuleFragmentProjectOSGiBundlePO( bot, INDEX_VALIDATION_MESSAGE2 );
 
         assertEquals( TEXT_OSGI_BUNDLE_BLANK, moduleFragmentOSGiBundlePage.getValidationMessage() );
@@ -98,8 +110,7 @@ public class ModuleFragmentProjectWizardTests extends SWTBotBase implements Modu
 
         moduleFragmentOSGiBundlePage.getOverriddenFiles().containsItem( null );
 
-        String[] files =
-            new String[] { "META-INF/resources/blogs_admin/configuration.jsp",
+        String[] files = new String[] { "META-INF/resources/blogs_admin/configuration.jsp",
             "META-INF/resources/blogs_aggregator/init.jsp", "META-INF/resources/blogs/asset/abstract.jsp",
             "META-INF/resources/blogs/edit_entry.jsp", "portlet.properties" };
 
@@ -113,7 +124,7 @@ public class ModuleFragmentProjectWizardTests extends SWTBotBase implements Modu
         moduleFragmentOSGiBundlePage.finish();
 
         sleep();
-        
+
         DialogPO dialogPage = new DialogPO( bot, "Open Associated Perspective", BUTTON_YES, BUTTON_NO );
 
         dialogPage.confirm();
@@ -124,19 +135,19 @@ public class ModuleFragmentProjectWizardTests extends SWTBotBase implements Modu
 
         projectTree.expandNode( pathTree ).doubleClick( "portlet-ext.properties" );
 
-        pathTree = new String[] { projectName , "src/main/resources", "META-INF", "resources", "blogs" };
+        pathTree = new String[] { projectName, "src/main/resources", "META-INF", "resources", "blogs" };
 
         projectTree.expandNode( pathTree ).doubleClick( "edit_entry.jsp" );
 
-        pathTree = new String[] { projectName , "src/main/resources", "META-INF", "resources", "blogs", "asset" };
+        pathTree = new String[] { projectName, "src/main/resources", "META-INF", "resources", "blogs", "asset" };
 
         projectTree.expandNode( pathTree ).doubleClick( "abstract.jsp" );
 
-        pathTree = new String[] { projectName , "src/main/resources", "META-INF", "resources", "blogs_admin" };
+        pathTree = new String[] { projectName, "src/main/resources", "META-INF", "resources", "blogs_admin" };
 
         projectTree.expandNode( pathTree ).doubleClick( "configuration.jsp" );
 
-        pathTree = new String[] { projectName , "src/main/resources", "META-INF", "resources", "blogs_aggregator" };
+        pathTree = new String[] { projectName, "src/main/resources", "META-INF", "resources", "blogs_aggregator" };
 
         projectTree.expandNode( pathTree ).doubleClick( "init.jsp" );
     }
@@ -144,6 +155,7 @@ public class ModuleFragmentProjectWizardTests extends SWTBotBase implements Modu
     @Before
     public void openWizard()
     {
+        Assume.assumeTrue( runTest() || runAllTests() );
 
         NewServerPO newServerPage = new NewServerPO( bot );
         NewServerRuntimeEnvPO setRuntimePage = new NewServerRuntimeEnvPO( bot );

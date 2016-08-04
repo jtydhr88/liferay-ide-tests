@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -47,6 +48,9 @@ public class NewJSFPortletWizardTests extends SWTBotBase implements JSFPortletWi
     @BeforeClass
     public static void createJSFPortletProject() throws Exception
     {
+        unzipPluginsSDK();
+        unzipServer();
+
         eclipse.getCreateLiferayProjectToolbar().getNewLiferayPluginProject().click();
 
         CreateProjectWizardPO page1 = new CreateProjectWizardPO( bot );
@@ -90,6 +94,8 @@ public class NewJSFPortletWizardTests extends SWTBotBase implements JSFPortletWi
     @Before
     public void openWizard()
     {
+        Assume.assumeTrue( runTest() || runAllTests() );
+
         eclipse.getCreateLiferayProjectToolbar().getNewLiferayJSFPortlet().click();
     }
 

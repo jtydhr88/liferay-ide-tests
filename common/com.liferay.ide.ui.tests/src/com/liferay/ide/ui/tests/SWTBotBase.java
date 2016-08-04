@@ -71,6 +71,7 @@ public class SWTBotBase implements UIBase
     public final static String PLUGINS_SDK_DIR = "com.liferay.portal.plugins.sdk-7.0";
 
     private final static String liferayBundlesDir = System.getProperty( "liferay.bundles.dir" );
+    private final static String runTest = System.getProperty( "runTest" );
 
     public static boolean hasAddedProject = false;
 
@@ -119,9 +120,20 @@ public class SWTBotBase implements UIBase
         SWTBotPreferences.TIMEOUT = 30000;
 
         SWTBotPreferences.KEYBOARD_LAYOUT = "EN_US";
+    }
 
-        unzipPluginsSDK();
-        unzipServer();
+    protected static boolean runAllTests()
+    {
+        return( "".equals( runTest ) || runTest == null );
+    }
+
+    protected boolean runTest()
+    {
+        String fullClassName = this.getClass().getName();
+
+        String className = fullClassName.substring( fullClassName.lastIndexOf( '.' ) ).substring( 1 );
+
+        return( className.equals( runTest ) );
     }
 
     protected static IPath getIvyCacheZip()

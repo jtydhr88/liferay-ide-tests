@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,14 +48,28 @@ import com.liferay.ide.ui.tests.util.ZipUtil;
 @RunWith( SWTBotJunit4ClassRunner.class )
 public class MigrationToolTests extends SWTBotBase implements MigrateProjectWizard
 {
+
     String MARKER_TYPE = "com.liferay.ide.project.core.MigrationProblemMarker";
     private static final String BUNDLE_ID = "com.liferay.ide.project.ui.tests";
     private static IProject project;
 
-    @After
-    public void cleanup() throws CoreException
+    @BeforeClass
+    public static void unzipServerAndSdk() throws IOException
     {
-        eclipse.getPackageExporerView().deleteResouceByName( project.getName(), true );
+        unzipServer();
+        unzipPluginsSDK();
+    }
+
+    @After
+    public void cleanup()
+    {
+        try
+        {
+            eclipse.getPackageExporerView().deleteResouceByName( project.getName(), true );
+        }
+        catch( Exception e )
+        {
+        }
     }
 
     public void deleteMigrationMarkers( IResource resource ) throws CoreException
@@ -89,6 +104,9 @@ public class MigrationToolTests extends SWTBotBase implements MigrateProjectWiza
     @Before
     public void importProject() throws IOException
     {
+        if( !( runTest() || runAllTests() ) )
+            return;
+
         File projectZipFile = getProjectZip( BUNDLE_ID, "knowledge-base-portlet" );
         IPath copyDir = getLiferayPluginsSdkDir().append( "/portlets" );
 
@@ -102,9 +120,11 @@ public class MigrationToolTests extends SWTBotBase implements MigrateProjectWiza
     @Test
     public void testMigrateProjectHandlerCancelOnMenu() throws Exception
     {
+        if( !( runTest() || runAllTests() ) )
+            return;
 
         project = CoreUtil.getProject( "knowledge-base-portlet" );
-        
+
         sleep( 2000 );
         IMarker marker = findMigrationMarker( project, ".*", false );
         assertNull( marker );

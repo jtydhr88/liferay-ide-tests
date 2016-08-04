@@ -19,6 +19,7 @@ import static org.eclipse.swtbot.swt.finder.SWTBotAssert.*;
 import static org.junit.Assert.*;
 
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,6 +62,102 @@ public class ImportLiferayModuleProjectTests extends SWTBotBase implements Impor
         eclipse.getPackageExporerView().deleteProjectExcludeNames( new String[] { getLiferayPluginsSdkName() }, false );
     }
 
+    @Test
+    public void importASingleModule()
+    {
+        // import module that out of liferay workpsace
+        importLiferayModulePage.get_locationText().setText( moduleRootPath + "/projects/MvcportletModule" );
+
+        sleep();
+        assertContains( TEXT_SELECT_LOCATION_OF_MODULE_PROJECT_DIRECTORY,
+            importLiferayModulePage.getValidationMessage() );
+
+        assertEquals( "gradle", importLiferayModulePage.get_buildTypeText().getText() );
+        assertTrue( importLiferayModulePage.finishButton().isEnabled() );
+        assertFalse( importLiferayModulePage.nextButton().isEnabled() );
+
+        importLiferayModulePage.finish();
+        importLiferayModulePage.waitForPageToClose();
+
+        projectTree.expandNode( "MvcportletModule" );
+        projectTree.getTreeItem( "MvcportletModule" ).getTreeItem( "build.gradle" ).doubleClick();
+
+        assertContains( "com.liferay.gradle.plugins", buildGradleText.getText() );
+
+        projectTree.getTreeItem( "MvcportletModule" ).collapse();
+
+        // import an existing module project
+        importLiferayModuleProjects();
+
+        importLiferayModulePage.get_locationText().setText( moduleRootPath + "/projects/MvcportletModule" );
+
+        sleep();
+        assertContains( TEXT_PROJECT_ALREADY_EXISTS, importLiferayModulePage.getValidationMessage() );
+
+        // import servicebuilder module which have sub-modules
+        importLiferayModulePage.get_locationText().setText( moduleRootPath + "/projects/ServicebuilderModule" );
+
+        sleep();
+        assertContains( TEXT_SELECT_LOCATION_OF_MODULE_PROJECT_DIRECTORY,
+            importLiferayModulePage.getValidationMessage() );
+        assertEquals( "gradle", importLiferayModulePage.get_buildTypeText().getText() );
+
+        assertTrue( importLiferayModulePage.finishButton().isEnabled() );
+        assertFalse( importLiferayModulePage.nextButton().isEnabled() );
+
+        importLiferayModulePage.finish();
+        importLiferayModulePage.waitForPageToClose();
+        sleep( 5000 );
+
+        projectTree.expandNode( "ServicebuilderModule" );
+        sleep();
+        projectTree.getTreeItem( "ServicebuilderModule" ).getTreeItem( "settings.gradle" ).doubleClick();
+
+        assertContains(
+            "include " + "\"" + "ServicebuilderModule-api" + "\", " + "\"" + "ServicebuilderModule-service" + "\"",
+            settingsGradleText.getText() );
+        assertTrue( projectTree.getTreeItem( "ServicebuilderModule-api" ).isVisible() );
+        assertTrue( projectTree.getTreeItem( "ServicebuilderModule-service" ).isVisible() );
+
+        projectTree.expandNode( "ServicebuilderModule-api" );
+        projectTree.getTreeItem( "ServicebuilderModule-api" ).getTreeItem( "build.gradle" ).doubleClick();
+
+        assertContains(
+            "buildscript {\n\tdependencies {\n\t\tclasspath group: \"com.liferay\", name: \"com.liferay.gradle.plugins\", version: \"1.0.369\"\n\t}\n\n\trepositories {\n\t\tmavenLocal()\n\n\t\tmaven {\n\t\t\turl \"https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public\"\n\t\t}\n\t}\n}\n\napply plugin: \"com.liferay.plugin\"\n\ndependencies {\n\tcompile group: \"com.liferay.portal\", name: \"com.liferay.portal.kernel\", version: \"2.0.0\"\n\tcompile group: \"com.liferay.portal\", name: \"com.liferay.util.taglib\", version: \"2.0.0\"\n\tcompile group: \"javax.portlet\", name: \"portlet-api\", version: \"2.0\"\n\tcompile group: \"javax.servlet\", name: \"servlet-api\", version: \"2.5\"\n\tcompile group: \"jstl\", name: \"jstl\", version: \"1.2\"\n\tcompile group: \"org.osgi\", name: \"org.osgi.compendium\", version: \"5.0.0\"\n}\n\nrepositories {\n\tmavenLocal()\n\n\tmaven {\n\t\turl \"https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public\"\n\t}\n}",
+            buildGradleText.getText() );
+
+        projectTree.expandNode( "ServicebuilderModule-service" );
+        projectTree.getTreeItem( "ServicebuilderModule-service" ).getTreeItem( "build.gradle" ).doubleClick();
+        sleep( 200 );
+
+        TreeItemPO serviceXml = new TreeItemPO( bot, projectTree, "ServicebuilderModule-service", "service.xml" );
+
+        assertTrue( serviceXml.isVisible() );
+        assertContains(
+            "buildscript {\n\tdependencies {\n\t\tclasspath group: \"com.liferay\", name: \"com.liferay.gradle.plugins\", version: \"1.0.369\"\n\t}\n\n\trepositories {\n\t\tmavenLocal()\n\n\t\tmaven {\n\t\t\turl \"https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public\"\n\t\t}\n\t}\n}\n\napply plugin: \"com.liferay.plugin\"\n\ndependencies {\n\tcompile group: \"com.liferay.portal\", name: \"com.liferay.portal.kernel\", version: \"2.0.0\"\n\tcompile group: \"com.liferay.portal\", name: \"com.liferay.util.taglib\", version: \"2.0.0\"\n\tcompile group: \"javax.portlet\", name: \"portlet-api\", version: \"2.0\"\n\tcompile group: \"javax.servlet\", name: \"servlet-api\", version: \"2.5\"\n\tcompile group: \"jstl\", name: \"jstl\", version: \"1.2\"\n\tcompile group: \"org.osgi\", name: \"org.osgi.compendium\", version: \"5.0.0\"\n}\n\nrepositories {\n\tmavenLocal()\n\n\tmaven {\n\t\turl \"https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public\"\n\t}\n}",
+            buildGradleText.getText() );
+
+        projectTree.getTreeItem( "ServicebuilderModule" ).collapse();
+        projectTree.getTreeItem( "ServicebuilderModule-api" ).collapse();
+        projectTree.getTreeItem( "ServicebuilderModule-service" ).collapse();
+
+        // import a module which in liferay workspace
+        importLiferayModuleProjects();
+
+        importLiferayModulePage.get_locationText().setText(
+            moduleRootPath + "/projects/testWorkspace/modules/PortletModule" );
+
+        sleep();
+        assertEquals( TEXT_BLANK, importLiferayModulePage.get_buildTypeText().getText() );
+        assertContains(
+            TEXT_NOT_ROOT_LOCATION_OF_MULTI_MODULE_PROJECT, importLiferayModulePage.getValidationMessage() );
+        assertFalse( importLiferayModulePage.finishButton().isEnabled() );
+
+        importLiferayModulePage.cancel();
+
+        eclipse.getPackageExporerView().deleteResouceByName( "ServicebuilderModule", false );
+    }
+
     public void importLiferayModuleProjects()
     {
         eclipse.getFileMenu().clickMenu( LABEL_IMPORT );
@@ -75,6 +172,8 @@ public class ImportLiferayModuleProjectTests extends SWTBotBase implements Impor
     @Before
     public void importModuleProject()
     {
+        Assume.assumeTrue( runTest() || runAllTests() );
+
         importLiferayModuleProjects();
     }
 
@@ -110,106 +209,8 @@ public class ImportLiferayModuleProjectTests extends SWTBotBase implements Impor
     }
 
     @Test
-    public void importASingleModule()
-    {
-
-        // import module that out of liferay workpsace
-        importLiferayModulePage.get_locationText().setText( moduleRootPath + "/projects/MvcportletModule" );
-
-        sleep();
-        assertContains( TEXT_SELECT_LOCATION_OF_MODULE_PROJECT_DIRECTORY,
-            importLiferayModulePage.getValidationMessage() );
-
-        assertEquals( "gradle", importLiferayModulePage.get_buildTypeText().getText() );
-        assertTrue( importLiferayModulePage.finishButton().isEnabled() );
-        assertFalse( importLiferayModulePage.nextButton().isEnabled() );
-
-        importLiferayModulePage.finish();
-        importLiferayModulePage.waitForPageToClose();
-
-        projectTree.expandNode( "MvcportletModule" );
-        projectTree.getTreeItem( "MvcportletModule" ).getTreeItem( "build.gradle" ).doubleClick();
-
-        assertContains( "com.liferay.gradle.plugins", buildGradleText.getText() );
-        
-        projectTree.getTreeItem( "MvcportletModule" ).collapse();
-
-        // import an existing module project
-        importLiferayModuleProjects();
-
-        importLiferayModulePage.get_locationText().setText( moduleRootPath + "/projects/MvcportletModule" );
-
-        sleep();
-        assertContains( TEXT_PROJECT_ALREADY_EXISTS, importLiferayModulePage.getValidationMessage() );
-
-        // import servicebuilder module which have sub-modules
-        importLiferayModulePage.get_locationText().setText( moduleRootPath + "/projects/ServicebuilderModule" );
-
-        sleep();
-        assertContains( TEXT_SELECT_LOCATION_OF_MODULE_PROJECT_DIRECTORY,
-            importLiferayModulePage.getValidationMessage() );
-        assertEquals( "gradle", importLiferayModulePage.get_buildTypeText().getText() );
-
-        assertTrue( importLiferayModulePage.finishButton().isEnabled() );
-        assertFalse( importLiferayModulePage.nextButton().isEnabled() );
-
-        importLiferayModulePage.finish();
-        importLiferayModulePage.waitForPageToClose();
-        sleep(5000);
-
-        projectTree.expandNode( "ServicebuilderModule" );
-        sleep();
-        projectTree.getTreeItem( "ServicebuilderModule" ).getTreeItem( "settings.gradle" ).doubleClick();
-
-        assertContains(
-            "include " + "\"" + "ServicebuilderModule-api" + "\", " + "\"" + "ServicebuilderModule-service" + "\"",
-            settingsGradleText.getText() );
-        assertTrue( projectTree.getTreeItem( "ServicebuilderModule-api" ).isVisible() );
-        assertTrue( projectTree.getTreeItem( "ServicebuilderModule-service" ).isVisible() );
-
-        projectTree.expandNode( "ServicebuilderModule-api" );
-        projectTree.getTreeItem( "ServicebuilderModule-api" ).getTreeItem( "build.gradle" ).doubleClick();
-
-        assertContains(
-            "buildscript {\n\tdependencies {\n\t\tclasspath group: \"com.liferay\", name: \"com.liferay.gradle.plugins\", version: \"1.0.369\"\n\t}\n\n\trepositories {\n\t\tmavenLocal()\n\n\t\tmaven {\n\t\t\turl \"https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public\"\n\t\t}\n\t}\n}\n\napply plugin: \"com.liferay.plugin\"\n\ndependencies {\n\tcompile group: \"com.liferay.portal\", name: \"com.liferay.portal.kernel\", version: \"2.0.0\"\n\tcompile group: \"com.liferay.portal\", name: \"com.liferay.util.taglib\", version: \"2.0.0\"\n\tcompile group: \"javax.portlet\", name: \"portlet-api\", version: \"2.0\"\n\tcompile group: \"javax.servlet\", name: \"servlet-api\", version: \"2.5\"\n\tcompile group: \"jstl\", name: \"jstl\", version: \"1.2\"\n\tcompile group: \"org.osgi\", name: \"org.osgi.compendium\", version: \"5.0.0\"\n}\n\nrepositories {\n\tmavenLocal()\n\n\tmaven {\n\t\turl \"https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public\"\n\t}\n}",
-            buildGradleText.getText() );
-
-        projectTree.expandNode( "ServicebuilderModule-service" );
-        projectTree.getTreeItem( "ServicebuilderModule-service" ).getTreeItem( "build.gradle" ).doubleClick( );
-        sleep( 200 );
-
-        TreeItemPO serviceXml = new TreeItemPO( bot, projectTree, "ServicebuilderModule-service", "service.xml" );
-
-        assertTrue( serviceXml.isVisible() );
-        assertContains(
-            "buildscript {\n\tdependencies {\n\t\tclasspath group: \"com.liferay\", name: \"com.liferay.gradle.plugins\", version: \"1.0.369\"\n\t}\n\n\trepositories {\n\t\tmavenLocal()\n\n\t\tmaven {\n\t\t\turl \"https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public\"\n\t\t}\n\t}\n}\n\napply plugin: \"com.liferay.plugin\"\n\ndependencies {\n\tcompile group: \"com.liferay.portal\", name: \"com.liferay.portal.kernel\", version: \"2.0.0\"\n\tcompile group: \"com.liferay.portal\", name: \"com.liferay.util.taglib\", version: \"2.0.0\"\n\tcompile group: \"javax.portlet\", name: \"portlet-api\", version: \"2.0\"\n\tcompile group: \"javax.servlet\", name: \"servlet-api\", version: \"2.5\"\n\tcompile group: \"jstl\", name: \"jstl\", version: \"1.2\"\n\tcompile group: \"org.osgi\", name: \"org.osgi.compendium\", version: \"5.0.0\"\n}\n\nrepositories {\n\tmavenLocal()\n\n\tmaven {\n\t\turl \"https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public\"\n\t}\n}",
-            buildGradleText.getText() );
-
-        projectTree.getTreeItem( "ServicebuilderModule" ).collapse();
-        projectTree.getTreeItem( "ServicebuilderModule-api" ).collapse();
-        projectTree.getTreeItem( "ServicebuilderModule-service" ).collapse();
-
-        // import a module which in liferay workspace
-        importLiferayModuleProjects();
-
-        importLiferayModulePage.get_locationText().setText(
-            moduleRootPath + "/projects/testWorkspace/modules/PortletModule" );
-
-        sleep();
-        assertEquals( TEXT_BLANK, importLiferayModulePage.get_buildTypeText().getText() );
-        assertContains(
-            TEXT_NOT_ROOT_LOCATION_OF_MULTI_MODULE_PROJECT, importLiferayModulePage.getValidationMessage() );
-        assertFalse( importLiferayModulePage.finishButton().isEnabled() );
-
-        importLiferayModulePage.cancel();
-
-        eclipse.getPackageExporerView().deleteResouceByName( "ServicebuilderModule", false );
-    }
-
-    @Test
     public void liferayModuleLocationTest()
     {
-
         // initial state check
         assertContains(
             TEXT_SELECT_LOCATION_OF_MODULE_PROJECT_DIRECTORY, importLiferayModulePage.getValidationMessage() );

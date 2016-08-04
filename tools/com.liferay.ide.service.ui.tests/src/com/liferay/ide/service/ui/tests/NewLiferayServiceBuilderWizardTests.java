@@ -27,7 +27,9 @@ import org.eclipse.swtbot.swt.finder.keyboard.Keyboard;
 import org.eclipse.swtbot.swt.finder.keyboard.KeyboardFactory;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.liferay.ide.project.ui.tests.ProjectWizard;
@@ -51,6 +53,7 @@ public class NewLiferayServiceBuilderWizardTests extends SWTBotBase implements S
 {
 
     ServiceBuilderWizardPO newServiceBuilderWizard = new ServiceBuilderWizardPO( bot, TITLE_NEW_SERVICE_BUILDER );
+
     String author = System.getenv( "USERNAME" );
 
     @AfterClass
@@ -58,7 +61,22 @@ public class NewLiferayServiceBuilderWizardTests extends SWTBotBase implements S
     {
         eclipse.closeShell( LABEL_NEW_LIFERAY_PLUGIN_PROJECT );
         eclipse.closeShell( TITLE_NEW_SERVICE_BUILDER );
-        eclipse.getPackageExporerView().deleteProjectExcludeNames( new String[] { getLiferayPluginsSdkName() }, true );
+
+        try
+        {
+            eclipse.getPackageExporerView().deleteProjectExcludeNames(
+                new String[] { getLiferayPluginsSdkName() }, true );
+        }
+        catch( Exception e )
+        {
+        }
+    }
+
+    @BeforeClass
+    public static void unzipServerAndSdk() throws IOException
+    {
+        unzipServer();
+        unzipPluginsSDK();
     }
 
     @Test
@@ -344,7 +362,7 @@ public class NewLiferayServiceBuilderWizardTests extends SWTBotBase implements S
         assertTrue( chooseOnePackage.getOkButton().isEnabled() );
         chooseOnePackage.confirm();
         newServiceBuilderWizard.getNamespaceText().setText( "namespace" );
-        newServiceBuilderWizard.getAuthorText().setText( author+"-v" );
+        newServiceBuilderWizard.getAuthorText().setText( author + "-v" );
         newServiceBuilderWizard.getIncludeSampleEntityCheckBox().deselect();
         assertEquals( TEXT_NEW_SERVICE_BUILDER_XML_FILE, newServiceBuilderWizard.getValidationMessage() );
         assertTrue( newServiceBuilderWizard.finishButton().isEnabled() );
@@ -359,7 +377,6 @@ public class NewLiferayServiceBuilderWizardTests extends SWTBotBase implements S
 
         assertTrue( textEditor.isActive() );
 
-
         assertContains( "newpackage", textEditor.getText() );
         assertContains( "namespace", textEditor.getText() );
         assertContains( author + "-v", textEditor.getText() );
@@ -370,6 +387,8 @@ public class NewLiferayServiceBuilderWizardTests extends SWTBotBase implements S
     @Before
     public void openWizard()
     {
+        Assume.assumeTrue( runTest() || runAllTests() );
+
         hasAddedProject = addedProjects();
 
         eclipse.getCreateLiferayProjectToolbar().getNewLiferayServiceBuilder().click();
