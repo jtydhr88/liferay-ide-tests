@@ -390,6 +390,90 @@ public class ModuleProjectWizardTests extends SWTBotBase implements ModuleProjec
     }
 
     @Test
+    public void createServiceModuleProjectInLiferayWorkspace()
+    {
+        String projectName = "testServiceProjectInLS";
+
+        if( finishButtonState )
+        {
+            newLiferayWorkspace.finish();
+            sleep( 20000 );
+        }
+        else
+        {
+            newLiferayWorkspace.cancel();
+        }
+
+        openModuleProjectWizard();
+
+        CreateModuleProjectWizardPO createModuleProjectWizard = new CreateModuleProjectWizardPO( bot );
+
+        createModuleProjectWizard.createModuleProject( projectName, MENU_MODULE_SERVICE );
+        createModuleProjectWizard.next();
+
+        ModuleProjectWizardSecondPagePO createModuleProjectSecondPageWizard =
+            new ModuleProjectWizardSecondPagePO( bot, INDEX_MUST_SPECIFY_SERVICE_NAME_VALIDATIOIN_MESSAGE );
+
+        assertEquals( TEXT_SERVICE_NAME_MUST_BE_SPECIFIED, createModuleProjectSecondPageWizard.getValidationMessage() );
+        assertEquals( "", createModuleProjectSecondPageWizard.getComponentClassName().getText() );
+        assertEquals( "", createModuleProjectSecondPageWizard.getPackageName().getText() );
+        assertEquals( "", createModuleProjectSecondPageWizard.getServiceName().getText() );
+        assertFalse( createModuleProjectSecondPageWizard.finishButton().isEnabled() );
+
+        createModuleProjectSecondPageWizard.getBrowseButton().click();
+        sleep( 5000 );
+
+        SelectModuleServiceNamePO selectOneServiceName = new SelectModuleServiceNamePO( bot );
+
+        selectOneServiceName.selectServiceName( "*lifecycleAction" );
+        sleep();
+        assertTrue( selectOneServiceName.confirmButton().isEnabled() );
+        selectOneServiceName.confirm();
+
+        assertEquals(
+            "com.liferay.portal.kernel.events.LifecycleAction",
+            createModuleProjectSecondPageWizard.getServiceName().getText() );
+        assertTrue( createModuleProjectSecondPageWizard.finishButton().isEnabled() );
+
+        createModuleProjectSecondPageWizard.getAddPropertyKeyButton().click();
+        sleep();
+        createModuleProjectSecondPageWizard.setPropertiesText( 3, "key" );
+        sleep();
+        createModuleProjectSecondPageWizard.getProperties().doubleClick( 0, 1 );
+        sleep();
+        createModuleProjectSecondPageWizard.setPropertiesText( 3, "login.events.pre" );
+        sleep();
+
+        keyPress.pressShortcut( enter );
+        sleep();
+
+        createModuleProjectSecondPageWizard.finish();
+        sleep( 10000 );
+
+        String javaFileName = "Testserviceprojectinlsservice.java";
+
+        projectTree.expandNode(
+            liferayWorkspaceName, "modules", projectName, "src/main/java", "com.example" ).doubleClick( javaFileName );
+
+        TextEditorPO checkJavaFile = eclipse.getTextEditor( javaFileName );
+
+        assertContains( "implements LifecycleAction", checkJavaFile.getText() );
+        checkJavaFile.close();
+
+        projectTree.setFocus();
+
+        String buildGradleFileName = "build.gradle";
+
+        projectTree.expandNode( liferayWorkspaceName, "modules", projectName ).doubleClick( buildGradleFileName );
+
+        TextEditorPO buildGradleFile = eclipse.getTextEditor( buildGradleFileName );
+
+        assertContains( "dependencies", buildGradleFile.getText() );
+
+        buildGradleFile.close();
+    }
+
+    @Test
     public void createServiceBuilderModuleProject()
     {
         String projectName = "testServiceBuilderProject";
@@ -448,6 +532,7 @@ public class ModuleProjectWizardTests extends SWTBotBase implements ModuleProjec
         TextEditorPO buildGradleFile = eclipse.getTextEditor( buildGradleFileName );
 
         projectTree.expandNode( projectName + "-api" ).doubleClick( buildGradleFileName );
+
         assertContains( "dependencies", buildGradleFile.getText() );
         buildGradleFile.close();
 
