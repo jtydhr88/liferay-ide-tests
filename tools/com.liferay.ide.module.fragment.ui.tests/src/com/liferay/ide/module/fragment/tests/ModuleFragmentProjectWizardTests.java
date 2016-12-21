@@ -116,6 +116,10 @@ public class ModuleFragmentProjectWizardTests extends SWTBotBase implements Modu
         moduleFragmentOSGiBundlePage.finish();
 
         sleep();
+        
+        DialogPO dialogPage = new DialogPO( bot, "Open Associated Perspective", BUTTON_YES, BUTTON_NO );
+
+        dialogPage.confirm();
 
         DialogPO dialogPage = new DialogPO( bot, "Open Associated Perspective", BUTTON_YES, BUTTON_NO );
 
